@@ -6,8 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Contactos;
+use PSpell\Config;
 
-final class PageController extends AbstractController
+class PageController extends AbstractController
 {
     private $contactos = [
         1 => ["nombre" => "Juan Pérez", "telefono" => "524142432", "email" => "juanp@ieselcaminas.org"],
@@ -17,20 +20,44 @@ final class PageController extends AbstractController
         9 => ["nombre" => "Nora Jover", "telefono" => "54565859", "email" => "norajover@ieselcaminas.org"]
     ];     
 
-    #[Route('/contacto/{codigo}', name: 'ficha_c')]
-    #[Route('/page', name: 'app_page')]
-    public function index(): JsonResponse
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/PageController.php',
-        ]);
-    }
 
     #[Route('/', name: 'inicio')]
     public function inicio(): Response
     {
-        return new Response("Bienvenido a la web de contactos");
+        return $this->render('inicio.html.twig');
+    }
+
+      
+
+    #[Route('/contacto/insertar', name: 'insertar_contacto')]
+    public function insertar(ManagerRegistry $doctrine)
+{
+    $entityManager = $doctrine->getManager();
+    foreach($this->contactos as $c){
+        $contacto = new Contactos();
+        $contacto -> setNombre($c["nombre"]);
+        $contacto -> setTelefono($c["telefono"]);
+        $contacto -> setEmail($c["email"]);
+        $entityManager -> persist($contacto);
+    }
+
+    try
+    {
+
+    $entityManager -> flush();
+    return new response ("Contactos insertados");
+    } catch(\Exception $e){
+        return new Response("Error insertando objetos");
     }
 }
+#[Route('/contacto/{codigo}', name: 'ficha_contacto')]
+   public function ficha(ManagerRegistry $doctrine, $codigo): Response{
+        $repositorio = $doctrine->getRepository(Contactos::class);
+        $contacto = $repositorio->find($codigo);
+        
+        return $this->render('ficha_contacto.html.twig', [
+            'contacto' => $contacto
+        ]);
+    }
 
+}
