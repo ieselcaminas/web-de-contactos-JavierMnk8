@@ -14,7 +14,18 @@ class ContactosRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Contactos::class);
+        }
+
+     public function findByName($text): array
+    {
+        $qb = $this->createQueryBuilder('c')
+        ->andWhere('c.nombre LIKE :text')
+        ->setParameter('text', '%' . $text . '%')
+        ->getQuery();
+
+        return $qb->getResult();
     }
+}
 
     //    /**
     //     * @return Contactos[] Returns an array of Contactos objects
@@ -39,5 +50,4 @@ class ContactosRepository extends ServiceEntityRepository
     //            ->getQuery()
     //            ->getOneOrNullResult()
     //        ;
-    //    }
-}
+  
