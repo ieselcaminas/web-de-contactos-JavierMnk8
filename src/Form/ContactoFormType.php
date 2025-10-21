@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class ContactoFormType extends AbstractType
 {
@@ -19,8 +20,9 @@ class ContactoFormType extends AbstractType
             ->add('email')
             ->add('Provincia', EntityType::class, [
                 'class' => Provincia::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nombre',
             ])
+            ->add('save', SubmitType::class, ['label' => 'Enviar'])
         ;
     }
 
