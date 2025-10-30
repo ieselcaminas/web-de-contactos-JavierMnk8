@@ -6,14 +6,6 @@
     
     {{include('partials/datos_contacto.html.twig', { 'contacto': contacto }) }}
     
-    <ul>
-        <li><strong>{{ contacto.nombre }}</strong></li>
-        <li><strong>Teléfono: </strong>{{ contacto.telefono }}</li>
-        {% if contancto.provincia %}
-        <li><strong>Provincia: </strong>{{ contacto.provincia.nombre }}</li>
-        {% endif %}
-        <li><strong>Correo: </strong>{{ contacto.email }}</li>
-    </ul>
         {% else %}
             <h4>Contacto no encontrado</h4>
         {% endif %}
